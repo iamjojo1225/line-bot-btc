@@ -1,34 +1,8 @@
-// // 引用linebot SDK
-// var linebot = require('linebot');
-
-// // 用於辨識Line Channel的資訊
-// var bot = linebot({
-//     channelId: '1657268941',
-//     channelSecret: 'b4161cdbb619ed211a9f65c8d4726120',
-//     channelAccessToken: 'kqx8m0MgkA+C51B3bB0MX1XTXcnPoYeI28e+cEial0hOtA6lB8rYUIYzbr/1OG7lqONSrX6kQyUSvEUWanKs/ixpVAQ6Y3HzfOqz3dlYSlOIoo/2M7j6jF9qyCTtn7f23f5abTKqcLVezKfALjl3kAdB04t89/1O/w1cDnyilFU='
-// });
-// const CONFIG = {}
-
-// // 當有人傳送訊息給Bot時
-// bot.on('message', (event) => {
-//     // event.message.text是使用者傳給bot的訊息
-//     // 使用event.reply(要回傳的訊息)方法可將訊息回傳給使用者
-//     var replyMsg = `此頻道為行情監聽`;
-//     // 透過event.reply(要回傳的訊息)方法將訊息回傳給使用者
-//     event.reply(replyMsg).then(function (data) {
-//         // 當訊息成功回傳後的處理
-//     }).catch(function (error) {
-//         // 當訊息回傳失敗後的處理
-//     });
-// });
-
-// // Bot所監聽的webhook路徑與port
-// bot.listen('/linewebhook', 3000, function () {
-//     console.log('[BOT已準備就緒]');
-// });
-//===========================================================
-// index.js
+// app.js
 const line = require('@line/bot-sdk');
+const crypto = require('crypto');
+
+
 var express = require('express');
 const config = {
     channelAccessToken: 'kqx8m0MgkA+C51B3bB0MX1XTXcnPoYeI28e+cEial0hOtA6lB8rYUIYzbr/1OG7lqONSrX6kQyUSvEUWanKs/ixpVAQ6Y3HzfOqz3dlYSlOIoo/2M7j6jF9qyCTtn7f23f5abTKqcLVezKfALjl3kAdB04t89/1O/w1cDnyilFU=',
@@ -42,14 +16,32 @@ const app = express();
 // register a webhook handler with middleware
 // about the middleware, please refer to doc
 app.post('/linewebhook', line.middleware(config), (req, res) => {
-    console.log(req, res)
-    Promise
-        .all(req.body.events.map(handleEvent))
-        .then((result) => res.json(result))
-        .catch((err) => {
-            console.error(err);
-            res.status(500).end();
-        });
+    console.log('req/res', req, res)
+    // 給 LINE 的 body 要是 string
+    const body = JSON.stringify(req.body);
+
+    // 取得 LINE 的簽名
+    const signature = crypto.createHmac('SHA256', channelSecret).update(body).digest('base64');
+    // 取得 headers 中的 X-Line-Signature
+    const headerX = req.get('X-Line-Signature');
+
+    // 當LINE的簽名 與 X-Line-Signature 一致時
+    if (signature === headerX) {
+
+        // webhook event
+        const event = req.body.events[0];
+        console.log('event: ', event);
+
+
+
+        Promise
+            .all(req.body.events.map(handleEvent))
+            .then((result) => res.json(result))
+            .catch((err) => {
+                console.error(err);
+                res.status(500).end();
+            });
+    }
 });
 // event handler
 function handleEvent(event) {

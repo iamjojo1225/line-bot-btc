@@ -20,6 +20,7 @@
   "homepage": "https://github.com/iamjojo1225/line-bot-btc#readme",
   "dependencies": {
     "@line/bot-sdk": "^7.5.0",
+    "crypto": "^1.0.1",
     "express": "^4.18.1"
   },
   "engines": {
