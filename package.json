@@ -1,0 +1,23 @@
+{
+  "name": "line-bot-btc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iamjojo1225/line-bot-btc.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iamjojo1225/line-bot-btc/issues"
+  },
+  "homepage": "https://github.com/iamjojo1225/line-bot-btc#readme",
+  "dependencies": {
+    "linebot": "^1.6.1"
+  }
+}
