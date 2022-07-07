@@ -18,8 +18,8 @@ const app = express();
 // register a webhook handler with middleware
 // about the middleware, please refer to doc
 app.post('/linewebhook', line.middleware(config), (req, res) => {
-    console.log('req: ' + JSON.stringify(req))
-    console.log('res: ' + JSON.stringify(res))
+    console.log('run 0 req: ', JSON.stringify(req))
+    console.log('run 0 res: ', JSON.stringify(res))
     // 給 LINE 的 body 要是 string
     const body = JSON.stringify(req.body);
     console.log('run 1: ', body);
