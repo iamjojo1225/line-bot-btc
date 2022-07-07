@@ -30,7 +30,7 @@ app.post('/linewebhook', line.middleware(config), (req, res) => {
     // const headerX = req.get('X-Line-Signature');
 
     // 當LINE的簽名 與 X-Line-Signature 一致時
-    console.log('run 2: ', signature, headerX);
+    // console.log('run 2: ', signature, headerX);
     // if (signature === headerX) {
 
     // webhook event
