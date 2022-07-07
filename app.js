@@ -19,6 +19,7 @@ app.post('/linewebhook', line.middleware(config), (req, res) => {
     console.log('req/res', req, res)
     // 給 LINE 的 body 要是 string
     const body = JSON.stringify(req.body);
+    console.log('run 1: ', body);
 
     // 取得 LINE 的簽名
     const signature = crypto.createHmac('SHA256', channelSecret).update(body).digest('base64');
@@ -26,11 +27,12 @@ app.post('/linewebhook', line.middleware(config), (req, res) => {
     const headerX = req.get('X-Line-Signature');
 
     // 當LINE的簽名 與 X-Line-Signature 一致時
+    console.log('run 2: ', signature, headerX);
     if (signature === headerX) {
 
         // webhook event
         const event = req.body.events[0];
-        console.log('event: ', event);
+        console.log('run 3: ', event);
 
 
 
