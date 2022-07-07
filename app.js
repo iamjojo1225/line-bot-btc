@@ -15,10 +15,10 @@ const client = new line.Client(config);
 // create Express app
 // about Express itself: <https://expressjs.com/>
 const app = express();
-// register a webhook handler with middleware
-// about the middleware, please refer to doc
-// app.post('/linewebhook', line.middleware(config), (req, res) => {
-app.post('/linewebhook', (req, res) => {
+
+
+
+app.post('/test', (req, res) => {
     console.log('run 0-1 req: ', req)
     console.log('run 0-2 res: ', res)
     // 給 LINE 的 body 要是 string
@@ -28,7 +28,39 @@ app.post('/linewebhook', (req, res) => {
     // 取得 LINE 的簽名
     // const signature = crypto.createHmac('SHA256', channelSecret).update(body).digest('base64');
     // 取得 headers 中的 X-Line-Signature
-    // const headerX = req.get('X-Line-Signature');
+    // const headerX = req.get('x-line-signature');
+
+    // 當LINE的簽名 與 X-Line-Signature 一致時
+    // console.log('run 2: ', signature, headerX);
+    // if (signature === headerX) {
+
+    // webhook event
+    const event = req.body.events[0];
+    console.log('run 3: ', event);
+
+
+
+    // Promise
+    //     .all(req.body.events.map(handleEvent))
+    //     .then((result) => res.json(result))
+    //     .catch((err) => {
+    //         console.error(err);
+    //         res.status(500).end();
+    //     });
+});
+
+
+app.post('/linewebhook', line.middleware(config), (req, res) => {
+    console.log('run 0-1 req: ', req)
+    console.log('run 0-2 res: ', res)
+    // 給 LINE 的 body 要是 string
+    const body = JSON.stringify(req.body);
+    console.log('run 1: ', body);
+
+    // 取得 LINE 的簽名
+    // const signature = crypto.createHmac('SHA256', channelSecret).update(body).digest('base64');
+    // 取得 headers 中的 X-Line-Signature
+    // const headerX = req.get('x-line-signature');
 
     // 當LINE的簽名 與 X-Line-Signature 一致時
     // console.log('run 2: ', signature, headerX);
