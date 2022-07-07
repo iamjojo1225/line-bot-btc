@@ -13,6 +13,32 @@ const channelSecret = config.channelSecret;
 // 創建 LINE SDK 客戶端
 const client = new line.Client(config);
 const app = express();
+app.post('/test', line.middleware(config), (req, res) => {
+    // 給 LINE 的 body 要是 string
+    const body = JSON.stringify(req.body);
+    console.log('run 100 body: ', req.body);
+    console.log('run 101 header: ', req.headers);
+
+
+    // 當LINE的簽名 與 X-Line-Signature 一致時
+    // console.log('run 2: ', signature, headerX);
+
+
+    // webhook event
+    const event = req.body.events[0];
+    console.log('run 102: ', event);
+
+
+
+    Promise
+        .all(req.body.events.map(handleEvent))
+        .then((result) => res.json(result))
+        .catch((err) => {
+            console.error(err);
+            res.status(500).end();
+        });
+
+});
 app.post('/linewebhook', line.middleware(config), (req, res) => {
     // 給 LINE 的 body 要是 string
     const body = JSON.stringify(req.body);
@@ -29,7 +55,7 @@ app.post('/linewebhook', line.middleware(config), (req, res) => {
 
         // webhook event
         const event = req.body.events[0];
-        console.log('run 3: ', event);
+        console.log('run 2: ', event);
 
 
 
