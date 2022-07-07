@@ -19,28 +19,28 @@ app.post('/linewebhook', line.middleware(config), (req, res) => {
     console.log('run 1: ', body);
 
     // 取得 LINE 的簽名
-    // const signature = crypto.createHmac('SHA256', channelSecret).update(body).digest('base64');
+    const signature = crypto.createHmac('SHA256', channelSecret).update(body).digest('base64');
     // 取得 headers 中的 X-Line-Signature
-    // const headerX = req.get('x-line-signature');
+    const headerX = req.get('x-line-signature');
 
     // 當LINE的簽名 與 X-Line-Signature 一致時
     // console.log('run 2: ', signature, headerX);
-    // if (signature === headerX) {
+    if (signature === headerX) {
 
-    // webhook event
-    const event = req.body.events[0];
-    console.log('run 3: ', event);
+        // webhook event
+        const event = req.body.events[0];
+        console.log('run 3: ', event);
 
 
 
-    Promise
-        .all(req.body.events.map(handleEvent))
-        .then((result) => res.json(result))
-        .catch((err) => {
-            console.error(err);
-            res.status(500).end();
-        });
-    // }
+        Promise
+            .all(req.body.events.map(handleEvent))
+            .then((result) => res.json(result))
+            .catch((err) => {
+                console.error(err);
+                res.status(500).end();
+            });
+    }
 });
 // event handler
 function handleEvent(event) {
