@@ -22,7 +22,7 @@ app.post('/linewebhook', line.middleware(config), (req, res) => {
     console.log('run 1: ', body);
 
     // 取得 LINE 的簽名
-    const signature = crypto.createHmac('SHA256', channelSecret).update(body).digest('base64');
+    const signature = crypto.createHmac('SHA256', config.channelSecret).update(body).digest('base64');
     // 取得 headers 中的 X-Line-Signature
     const headerX = req.get('X-Line-Signature');
 
