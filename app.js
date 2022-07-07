@@ -9,7 +9,7 @@ const config = {
     channelSecret: 'b4161cdbb619ed211a9f65c8d4726120'
 };
 // LINE 頻道秘密
-const channelSecret = lineConfig.channelSecret;
+const channelSecret = config.channelSecret;
 // 創建 LINE SDK 客戶端
 const client = new line.Client(config);
 // create Express app
