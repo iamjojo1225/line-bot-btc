@@ -1,5 +1,6 @@
 const linebot = require('linebot');
 const express = require('express');
+const bodyParser = require('body-parser');
 
 // const bot = linebot({
 //     channelId: process.env.CHANNEL_ID,
@@ -18,7 +19,7 @@ const app = express();
 const parser = bodyParser.json({
     verify: (req, res, buf, encoding) => {
         req.rawBody = buf.toString(encoding);
-        console.log('req: ', req);
+        console.log('req.rawHeaders: ', req.rawHeaders);
     }
 });
 
