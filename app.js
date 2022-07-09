@@ -39,9 +39,11 @@ app.post('/linewebhook', parser, (req, res) => {
     console.log('run 4', req.headers);
     req.headers['X-Line-Signature'] = X_Line_Signature;
     console.log('run 5', req.headers);
-    if (!bot.verify(req.rawBody, req.get('X-Line-Signature'))) {
-        return res.sendStatus(400);
-    }
+    console.log('run 6 ', req.rawBody);
+    console.log('run 7 ', req.get('X-Line-Signature'));
+    // if (!bot.verify(req.rawBody, req.get('X-Line-Signature'))) {
+    //     return res.sendStatus(400);
+    // }
     bot.parse(req.body);
     return res.json({});
 });
