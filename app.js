@@ -12,6 +12,7 @@ const bot = linebot({
     channelSecret: 'b4161cdbb619ed211a9f65c8d4726120',
     channelAccessToken: 'kqx8m0MgkA+C51B3bB0MX1XTXcnPoYeI28e+cEial0hOtA6lB8rYUIYzbr/1OG7lqONSrX6kQyUSvEUWanKs/ixpVAQ6Y3HzfOqz3dlYSlOIoo/2M7j6jF9qyCTtn7f23f5abTKqcLVezKfALjl3kAdB04t89/1O/w1cDnyilFU='
 });
+let X_Line_Signature = 'OLWBPlnJFG1ZndihlWJ/cz6E9Z4Edq8ZUXFwOqyseEw=';
 console.log('run 1 bot: ', bot);
 
 const app = express();
@@ -19,11 +20,25 @@ const app = express();
 const parser = bodyParser.json({
     verify: (req, res, buf, encoding) => {
         req.rawBody = buf.toString(encoding);
-        console.log('req.rawHeaders: ', req.rawHeaders);
+
+        console.log('run 1 req.rawHeaders: ', req.rawHeaders);
+        const hasXLineSignature = req.rawHeaders.includes('X-Line-Signature');
+        if (hasXLineSignature) {
+            console.log('run 2');
+            const valueLength = req.rawHeaders.indexOf('X-Line-Signature') + 1;
+            X_Line_Signature = req.rawHeaders[valueLength];
+        } else {
+            const targetObj = ['X-Line-Signature', X_Line_Signature]
+            req.rawHeaders = req.rawHeaders.concat(targetObj);
+            console.log('run 3', req.rawHeaders);
+        }
     }
 });
 
 app.post('/linewebhook', parser, (req, res) => {
+    console.log('run 4', req.headers);
+    req.headers['X-Line-Signature'] = X_Line_Signature;
+    console.log('run 5', req.headers);
     if (!bot.verify(req.rawBody, req.get('X-Line-Signature'))) {
         return res.sendStatus(400);
     }
