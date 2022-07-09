@@ -15,12 +15,23 @@ console.log('run 1 bot: ', bot);
 
 const app = express();
 
-const linebotParser = bot.parser();
+const parser = bodyParser.json({
+    verify: (req, res, buf, encoding) => {
+        req.rawBody = buf.toString(encoding);
+        console.log('req: ', req);
+    }
+});
 
-app.post('/linewebhook', linebotParser);
+app.post('/linewebhook', parser, (req, res) => {
+    if (!bot.verify(req.rawBody, req.get('X-Line-Signature'))) {
+        return res.sendStatus(400);
+    }
+    bot.parse(req.body);
+    return res.json({});
+});
 
-bot.on('message', function (event) {
-    event.reply(event.message.text).then(function (data) {
+bot.on('message', (event) => {
+    event.reply(event.message.text).then((data) => {
         console.log('成功', data);
     }).catch(function (error) {
         console.log('失敗', error);
@@ -30,3 +41,4 @@ bot.on('message', function (event) {
 app.listen(process.env.PORT || 80, function () {
     console.log('=== 正在執行 LineBot ===');
 });
+
